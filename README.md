@@ -1,23 +1,21 @@
 # Words Generator
-Do you ever forgot some words that you may know some of the letters but still 
-could not remember it?
+Do you ever need to generate some words for your project? or team name or whatever-your-objective-is name?
 
-Do you ever need to generate some words for your project? or team name or 
-whatever-your-objective-is name?
+Do you ever forgot some words that you may know some of the word details but still could not remember it?
+
+Are you currently doing a linguistic project? Writing a poem, or a song for your girlfriend perhaps and in need to find inspiration for the words?
 
 This project is what you need.
 
-Some backstory: this is inspired from a game that I like to play. I got 
-frustated from spending too much time thinking about the words so I made this 
-little help.
+Some backstory: I have this word game that I really like to play. But I got frustated from thinking too much so I made this little cheat.
 
 ## Current Features
 Random word generators + word filters: Generate words based on the input 
 characters using your own corpus or nltk corpus dictionary.
 
-Note that to use your own corpus, put your words in file separated by 
-line then copy the corpus file under the wordsgen/corpus directory. Example of 
-the custom corpus can be seen in wordsgen/corpus/oxford_adj_corpus.tsv
+Notes:
+- For a faster querying performance, add more restrictive conditions to the random word generator.
+-  To use your own corpus, put your words in file separated by line then copy the corpus file under the wordsgen/corpus directory. Example of the custom corpus can be seen in `wordsgen/corpus/oxford_adj_corpus.tsv`
 
 ### Words Filters
 1. Length of the Letters

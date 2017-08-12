@@ -101,5 +101,7 @@ ENV/
 .mypy_cache/
 
 .vscode
-__book
+__book/
 .idea/
+bin/
+include/

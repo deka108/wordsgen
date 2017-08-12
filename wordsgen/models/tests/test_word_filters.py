@@ -1,18 +1,18 @@
 import unittest
 
-from models.filters import CharacterFilter, CharacterLengthFilter, \
-    ResultsFilter
+from models.word_filters import CharacterWordFilter, CharacterLengthFilter, \
+    ResultsWordFilter
 
 
 class TestFilters(unittest.TestCase):
 
     def test_character_filter(self):
-        filter = CharacterFilter("abc", exact=False)
+        filter = CharacterWordFilter("abc", exact=False)
         self.assertFalse(filter.exact)
         self.assertEqual("abc", filter.characters)
         self.assertEqual(3, filter.characters_length)
 
-        filter = CharacterFilter("cab", exact=True)
+        filter = CharacterWordFilter("cab", exact=True)
         self.assertTrue(filter.exact)
         self.assertEqual("abc", filter.sorted_characters)
 
@@ -30,11 +30,11 @@ class TestFilters(unittest.TestCase):
         self.assertEqual(6, filter.upper_bound)
 
     def test_results_filter(self):
-        filter = ResultsFilter(5, shuffle=False)
+        filter = ResultsWordFilter(5, shuffle=False)
         self.assertEqual(5, filter.length)
         self.assertFalse(filter.shuffle)
 
-        filter = ResultsFilter(4, shuffle=True)
+        filter = ResultsWordFilter(4, shuffle=True)
         self.assertEqual(4, filter.length)
         self.assertTrue(filter.shuffle)
 

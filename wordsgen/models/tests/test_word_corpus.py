@@ -4,7 +4,7 @@ from models.word_corpus import NLTKCorpus, RawTextCorpus, FileCorpus
 
 
 class TestWordCorpus(unittest.TestCase):
-    # @unittest.skip("NLTK skipped")
+    @unittest.skip("NLTK skipped")
     def test_nltk_corpus(self):
         corpus = NLTKCorpus()
 
@@ -34,6 +34,14 @@ class TestWordCorpus(unittest.TestCase):
                    'legal-speak, left-speak, dumpsville, dullsville, ' \
                    'squaresville,hicksville, smallville, stupidville, ' \
                    'shitsville'
+
+        corpus = RawTextCorpus("")
+        self.assertIsNotNone(corpus)
+
+        corpus = RawTextCorpus("10")
+        self.assertIsNotNone(corpus)
+
+        self.assertRaises(ValueError, RawTextCorpus, 10)
 
         corpus = RawTextCorpus(raw_text=raw_text)
         self.assertIsNotNone(corpus)

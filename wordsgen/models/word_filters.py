@@ -6,7 +6,7 @@ from collections import Counter
 from numbers import Number
 
 
-class Filter(metaclass=ABCMeta):
+class WordFilter(metaclass=ABCMeta):
     def __init__(self):
         super().__init__()
 
@@ -15,7 +15,7 @@ class Filter(metaclass=ABCMeta):
         pass
 
 
-class CharacterFilter(Filter):
+class CharacterWordFilter(WordFilter):
 
     def __init__(self, characters, exact):
         super().__init__()
@@ -60,7 +60,7 @@ class CharacterFilter(Filter):
         return results
 
 
-class LengthFilter(Filter):
+class LengthWordFilter(WordFilter):
     def __init__(self, length):
         super().__init__()
         if isinstance(length, Number):
@@ -85,7 +85,7 @@ class LengthFilter(Filter):
         pass
 
 
-class CharacterLengthFilter(LengthFilter):
+class CharacterLengthFilter(LengthWordFilter):
 
     def __init__(self, length):
         super().__init__(length)
@@ -100,7 +100,7 @@ class CharacterLengthFilter(LengthFilter):
         return results
 
 
-class ResultsFilter(Filter):
+class ResultsWordFilter(WordFilter):
     def __init__(self, length, shuffle):
         super().__init__()
         self.length = length
