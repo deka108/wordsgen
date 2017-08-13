@@ -5,12 +5,15 @@ from collections import OrderedDict
 from enum import Enum
 from models.word_filters import CharacterLengthFilter, ResultsWordFilter, \
     CharacterWordFilter
+from utils.string_utils import print_array
 
 
 class CorpusSource(Enum):
     NLTK = "nltk"
     RAW_TEXT = "raw_text"
     FILE = "file"
+
+corpus_values = [corpus_src.value for corpus_src in CorpusSource]
 
 
 class WordCorpus(metaclass=ABCMeta):
@@ -53,15 +56,16 @@ class WordCorpus(metaclass=ABCMeta):
 
         return len_to_sorted_to_words
 
-    def generate_random_words(self, word_length=None,
+    def generate_random_words(self,
+                              word_length=None, min_length=0, max_length=100,
                               letters=None, exact_letters=False,
                               max_result=None, shuffle_result=False,
-                              print=False):
+                              print_console=False):
         """
         Random word generator.
         
-        :param word_length: a range of the desired random words. Can be a 
-        number or tuple of two numbers. Eg: [lower_bound, upper_bound].
+        :param word_length: a string of the desired random words' length. 
+        The string can be a number or two comma-separated numbers.
         :param letters: a string where all the characters in the string 
         shall appear in the random words. Eg: abba or aero.
         :param exact_letters: a boolean to indicate whether the random words 
@@ -75,7 +79,9 @@ class WordCorpus(metaclass=ABCMeta):
 
         # filtered by word length
         if word_length:
-            filtered_corpus = CharacterLengthFilter(word_length) \
+            filtered_corpus = CharacterLengthFilter(word_length,
+                                                    min_length=min_length,
+                                                    max_length=max_length) \
                 .filter_corpus(filtered_corpus)
 
         # filtered by characters
@@ -88,15 +94,15 @@ class WordCorpus(metaclass=ABCMeta):
         results = ResultsWordFilter(length=max_result, shuffle=shuffle_result)\
             .filter_corpus(filtered_corpus)
 
-        if print:
+        if print_console:
             self.print_results(results)
 
         return results
 
     @staticmethod
     def print_results(results):
-        for result in results:
-            print(result)
+        print("No. of Results: {}".format(len(results)))
+        print_array(results)
 
 
 class NLTKCorpus(WordCorpus):
@@ -150,7 +156,7 @@ class FileCorpus(WordCorpus):
                 .format(root_dir=config.ROOT_DIR, file_name=self.file_name)
 
             with open(path, 'r') as fp:
-                words = [word for line in fp for word in line.split()]
+                words = [word.strip() for line in fp for word in line.split()]
 
             return words
         except FileNotFoundError:

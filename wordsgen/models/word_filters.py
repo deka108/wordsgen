@@ -1,9 +1,8 @@
-import ast
 import random
-
 from abc import ABCMeta, abstractmethod
 from collections import Counter
-from numbers import Number
+
+from utils.string_utils import parse_range
 
 
 class WordFilter(metaclass=ABCMeta):
@@ -32,13 +31,14 @@ class CharacterWordFilter(WordFilter):
         results = {}
 
         if self.exact:
-            sorted_to_words = compact_corpus.get(self.characters_length)
+            if self.characters_length in compact_corpus:
+                sorted_to_words = compact_corpus[self.characters_length]
 
-            if sorted_to_words.get(self.sorted_characters):
-                results.setdefault(self.characters_length,
-                                   {self.sorted_characters:
-                                       sorted_to_words.get(
-                                           self.sorted_characters)})
+                if self.sorted_characters in sorted_to_words:
+                    results.setdefault(self.characters_length,
+                                       {self.sorted_characters:
+                                           sorted_to_words[
+                                               self.sorted_characters]})
         else:
             for length in compact_corpus:
                 if length >= self.characters_length:
@@ -61,24 +61,11 @@ class CharacterWordFilter(WordFilter):
 
 
 class LengthWordFilter(WordFilter):
-    def __init__(self, length):
+    def __init__(self, length, min_length, max_length):
         super().__init__()
-        if isinstance(length, Number):
-            self.lower_bound = length
-            self.upper_bound = length
-        else:
-            try:
-                length_range = ast.literal_eval(length)
-                if len(length_range) != 2:
-                    raise ValueError("Length must either be a number or in "
-                                     "the form of two numbers eg. "
-                                     "[1, 6] or 1, 6 that indicate lower and "
-                                     "upper length for the words")
-
-                self.lower_bound = length_range[0]
-                self.upper_bound = length_range[1]
-            except ValueError as ex:
-                print(ex)
+        self.lower_bound, self.upper_bound = parse_range(length,
+                                                         min_val=min_length,
+                                                         max_val=max_length)
 
     @abstractmethod
     def filter_corpus(self, compact_corpus):
@@ -87,8 +74,8 @@ class LengthWordFilter(WordFilter):
 
 class CharacterLengthFilter(LengthWordFilter):
 
-    def __init__(self, length):
-        super().__init__(length)
+    def __init__(self, length, min_length=0, max_length=100):
+        super().__init__(length, min_length, max_length)
 
     def filter_corpus(self, compact_corpus):
         results = {}
@@ -116,11 +103,9 @@ class ResultsWordFilter(WordFilter):
         if self.shuffle:
             random.shuffle(results)
         else:
-            sorted(results)
+            results = sorted(results)
 
         if self.length:
             return results[:self.length]
 
         return results
-
-

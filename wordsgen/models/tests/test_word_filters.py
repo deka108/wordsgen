@@ -16,18 +16,38 @@ class TestFilters(unittest.TestCase):
         self.assertTrue(filter.exact)
         self.assertEqual("abc", filter.sorted_characters)
 
-    def test_character_legnth_filter(self):
-        filter = CharacterLengthFilter(4)
-        self.assertEqual(4, filter.upper_bound)
+    def test_character_length_filter(self):
+        filter = CharacterLengthFilter("4")
         self.assertEqual(4, filter.lower_bound)
+        self.assertEqual(4, filter.upper_bound)
+
+        filter = CharacterLengthFilter("4,")
+        self.assertEqual(4, filter.lower_bound)
+        self.assertEqual(100, filter.upper_bound)
+
+        filter = CharacterLengthFilter(",4")
+        self.assertEqual(0, filter.lower_bound)
+        self.assertEqual(4, filter.upper_bound)
+
+        filter = CharacterLengthFilter("4,", max_length=20)
+        self.assertEqual(4, filter.lower_bound)
+        self.assertEqual(20, filter.upper_bound)
+
+        filter = CharacterLengthFilter(",4", min_length=-1)
+        self.assertEqual(-1, filter.lower_bound)
+        self.assertEqual(4, filter.upper_bound)
+
+        filter = CharacterLengthFilter(",", min_length=-1, max_length=1)
+        self.assertEqual(-1, filter.lower_bound)
+        self.assertEqual(1, filter.upper_bound)
+
+        filter = CharacterLengthFilter("", min_length=-1, max_length=1)
+        self.assertEqual(-1, filter.lower_bound)
+        self.assertEqual(1, filter.upper_bound)
 
         filter = CharacterLengthFilter("5, 7")
         self.assertEqual(5, filter.lower_bound)
         self.assertEqual(7, filter.upper_bound)
-
-        filter = CharacterLengthFilter("[3, 6]")
-        self.assertEqual(3, filter.lower_bound)
-        self.assertEqual(6, filter.upper_bound)
 
     def test_results_filter(self):
         filter = ResultsWordFilter(5, shuffle=False)

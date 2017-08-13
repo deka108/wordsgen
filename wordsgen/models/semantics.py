@@ -1,6 +1,11 @@
 from abc import ABCMeta, abstractmethod
 from enum import Enum
 from nltk.corpus import wordnet as wn
+from utils.string_utils import print_array
+
+
+class SemanticsSource(Enum):
+    NLTK_WORDNET = "nltk_wordnet"
 
 
 class PosTag(Enum):
@@ -8,6 +13,9 @@ class PosTag(Enum):
     NOUN = "noun"
     ADJECTIVE = "adjective"
     ADVERB = "adverb"
+
+pos_tags = [pos_tag.value for pos_tag in PosTag]
+semantics_sources = [semantics_src.value for semantics_src in SemanticsSource]
 
 
 class Semantics(metaclass=ABCMeta):
@@ -29,15 +37,14 @@ class Semantics(metaclass=ABCMeta):
 
     @staticmethod
     def print_results(results):
-        for result in results:
-            print(result)
+        print_array(results)
 
 
-class WordNetSemantics(Semantics):
+class NLTKWordNetSemantics(Semantics):
     def __init__(self):
         super().__init__()
 
-    def find_antonyms(self, word, pos=None, sort=False, print=False):
+    def find_antonyms(self, word, pos=None, sort=False, print_console=False):
         results = set()
         antonyms = set()
 
@@ -53,30 +60,30 @@ class WordNetSemantics(Semantics):
 
         results = self._sort_results(results, sort)
 
-        if print:
+        if print_console:
             self.print_results(results)
 
         return results
 
-    def find_synonyms(self, word, pos=None, sort=False, print=False):
+    def find_synonyms(self, word, pos=None, sort=False, print_console=False):
         if pos:
             pos = self._get_pos_tagging(pos)
 
         results = self._sort_results(self._get_word_synsets(word, pos), sort)
 
-        if print:
+        if print_console:
             self.print_results(results)
 
         return results
 
     def _get_pos_tagging(self, pos):
-        if pos == PosTag.VERB.value:
+        if pos == PosTag.VERB:
             return wn.VERB
-        elif pos == PosTag.NOUN.value:
+        elif pos == PosTag.NOUN:
             return wn.NOUN
-        elif pos == PosTag.ADJECTIVE.value:
+        elif pos == PosTag.ADJECTIVE:
             return wn.ADJ
-        elif pos == PosTag.ADVERB.value:
+        elif pos == PosTag.ADVERB:
             return wn.ADV
 
     @staticmethod
@@ -93,7 +100,3 @@ class WordNetSemantics(Semantics):
             results.update(synset.lemma_names())
 
         return results
-
-
-
-

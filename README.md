@@ -15,7 +15,7 @@ characters using your own corpus or nltk corpus dictionary.
 
 Notes:
 - For a faster querying performance, add more restrictive conditions to the random word generator.
--  To use your own corpus, put your words in file separated by line then copy the corpus file under the wordsgen/corpus directory. Example of the custom corpus can be seen in `wordsgen/corpus/oxford_adj_corpus.tsv`
+- To use a custom corpus, put your words in a file separated by line then copy the corpus file under the wordsgen/corpus directory. Example of the custom corpus can be seen in `wordsgen/corpus/oxford_adj_corpus.tsv`
 
 ### Words Filters
 1. Length of the Letters
