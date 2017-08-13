@@ -6,7 +6,7 @@ from models.word_corpus import NLTKCorpus, FileCorpus, RawTextCorpus, \
 
 def run_test(corpus):
     if corpus == CorpusSource.NLTK:
-        return False
+        return True
     elif corpus == CorpusSource.FILE:
         return True
     elif corpus == CorpusSource.RAW_TEXT:
@@ -121,6 +121,10 @@ class TestRawTextWordGenerator(unittest.TestCase):
         self.assertEqual(64, self.corpus.size)
         res = self.corpus.generate_random_words()
         self.assertEqual(64, len(res))
+
+    def test_sort_words(self):
+        res = self.corpus.generate_random_words(letters="fest", sort=True)
+        self.assertTrue(all([res[i] <= res[i+1] for i in range(len(res) - 1)]))
 
     def test_filter_letters(self):
         res = self.corpus.generate_random_words(letters="")

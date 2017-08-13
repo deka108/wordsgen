@@ -50,13 +50,13 @@ class TestFilters(unittest.TestCase):
         self.assertEqual(7, filter.upper_bound)
 
     def test_results_filter(self):
-        filter = ResultsWordFilter(5, shuffle=False)
+        filter = ResultsWordFilter(5, sort=False)
         self.assertEqual(5, filter.length)
-        self.assertFalse(filter.shuffle)
+        self.assertFalse(filter.sort)
 
-        filter = ResultsWordFilter(4, shuffle=True)
+        filter = ResultsWordFilter(4, sort=True)
         self.assertEqual(4, filter.length)
-        self.assertTrue(filter.shuffle)
+        self.assertTrue(filter.sort)
 
 if __name__ == "__main__":
     unittest.main()

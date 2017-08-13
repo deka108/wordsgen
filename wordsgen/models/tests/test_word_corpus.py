@@ -4,7 +4,7 @@ from models.word_corpus import NLTKCorpus, RawTextCorpus, FileCorpus
 
 
 class TestWordCorpus(unittest.TestCase):
-    @unittest.skip("NLTK skipped")
+
     def test_nltk_corpus(self):
         corpus = NLTKCorpus()
 

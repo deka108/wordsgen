@@ -20,9 +20,8 @@ def parse_range(range_str, min_val=0, max_val=100):
 
         return lower_bound, upper_bound
     except ValueError:
-        raise ValueError("Range must either be a number or in "
-                         "the form of two numbers separated by "
-                         "comma eg. or 1, 6 which indicate lower and "
+        raise ValueError("Range must either be a number or two numbers "
+                         "separated by comma eg. or 1, 6 to indicate lower and "
                          "upper bounds")
 
 

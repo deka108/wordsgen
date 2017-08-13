@@ -88,10 +88,10 @@ class CharacterLengthFilter(LengthWordFilter):
 
 
 class ResultsWordFilter(WordFilter):
-    def __init__(self, length, shuffle):
+    def __init__(self, length, sort):
         super().__init__()
         self.length = length
-        self.shuffle = shuffle
+        self.sort = sort
 
     def filter_corpus(self, compact_corpus):
         results = []
@@ -100,10 +100,10 @@ class ResultsWordFilter(WordFilter):
             for sorted_word in compact_corpus[length]:
                 results += compact_corpus[length][sorted_word]
 
-        if self.shuffle:
-            random.shuffle(results)
-        else:
+        if self.sort:
             results = sorted(results)
+        else:
+            random.shuffle(results)
 
         if self.length:
             return results[:self.length]

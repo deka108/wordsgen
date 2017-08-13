@@ -1,10 +1,9 @@
-import config
-
 from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
 from enum import Enum
 from models.word_filters import CharacterLengthFilter, ResultsWordFilter, \
     CharacterWordFilter
+from config import ROOT_DIR
 from utils.string_utils import print_array
 
 
@@ -33,7 +32,7 @@ class WordCorpus(metaclass=ABCMeta):
 
     def _init_corpus(self):
         """
-        Initialise word corpus and removing corpus duplicate.
+        Initialise word corpus and remove duplicates.
 
         :return: list of unique words in the corpus. 
         """
@@ -43,8 +42,7 @@ class WordCorpus(metaclass=ABCMeta):
         """
         Transform corpus into a compact data structure for generating random 
         words.
-         
-        :param corpus: list of words in the corpus.
+
         :return: the compact data structure.
         """
         len_to_sorted_to_words = {}
@@ -59,20 +57,25 @@ class WordCorpus(metaclass=ABCMeta):
     def generate_random_words(self,
                               word_length=None, min_length=0, max_length=100,
                               letters=None, exact_letters=False,
-                              max_result=None, shuffle_result=False,
+                              max_result=None, sort=False,
                               print_console=False):
         """
         Random word generator.
-        
-        :param word_length: a string of the desired random words' length. 
+
+        :param word_length: a string of the desired random words' length.
+        :param max_length: the maximum length of the whole corpus.
+        :param min_length: the minimum length of the whole corpus.
         The string can be a number or two comma-separated numbers.
         :param letters: a string where all the characters in the string 
         shall appear in the random words. Eg: abba or aero.
-        :param exact_letters: a boolean to indicate whether the random words 
-        must contain exactly all the characters in the letters and no others.  
+        :param exact_letters: a boolean to indicate that the random words
+        must contain the same number of characters in the letters argument
+        and no others.
         :param max_result: an integer to limit the random words results.
-        :param shuffle_result: a boolean to indicate whether the random words
+        :param sort: a boolean to indicate whether the random words
          need to be shuffled or sorted alphabetically.
+        :param print_console: a boolean to indicate printing the results to
+        the console.
         :return: 
         """
         filtered_corpus = self.compact_corpus
@@ -90,8 +93,8 @@ class WordCorpus(metaclass=ABCMeta):
                                                   exact=exact_letters)\
                 .filter_corpus(filtered_corpus)
 
-        # filtered by maximum characters
-        results = ResultsWordFilter(length=max_result, shuffle=shuffle_result)\
+        # filtered by maximum number of result
+        results = ResultsWordFilter(length=max_result, sort=sort)\
             .filter_corpus(filtered_corpus)
 
         if print_console:
@@ -101,13 +104,14 @@ class WordCorpus(metaclass=ABCMeta):
 
     @staticmethod
     def print_results(results):
-        print("No. of Results: {}".format(len(results)))
-        print_array(results)
+        print("=== No of Random Generator Result: {} ===".format(len(results)))
+        if len(results) > 0:
+            print_array(results)
 
 
 class NLTKCorpus(WordCorpus):
     """
-    Word corpus with NLTK data source.
+    Build word corpus using NLTK data source.
     """
     def __init__(self):
         super(NLTKCorpus, self).__init__()
@@ -119,12 +123,11 @@ class NLTKCorpus(WordCorpus):
 
 class RawTextCorpus(WordCorpus):
     """
-    Word corpus with comma separated word text source.
+    Build word corpus from a string.
     """
     def __init__(self, raw_text):
         """
-        
-        :param raw_text: 
+        :param raw_text: a line of comma-separated words.
         """
         self.raw_text = raw_text
         super().__init__()
@@ -140,12 +143,12 @@ class RawTextCorpus(WordCorpus):
 
 class FileCorpus(WordCorpus):
     """
-    Word corpus with newline separated word text file source.
+    Build word corpus from a text file source.
     """
     def __init__(self, file_name):
         """
-        
-        :param file_name: 
+        :param file_name: the text file name which consist of line-separated
+        words.
         """
         self.file_name = file_name
         super().__init__()
@@ -153,7 +156,7 @@ class FileCorpus(WordCorpus):
     def _get_words(self):
         try:
             path = "{root_dir}/corpus/{file_name}"\
-                .format(root_dir=config.ROOT_DIR, file_name=self.file_name)
+                .format(root_dir=ROOT_DIR, file_name=self.file_name)
 
             with open(path, 'r') as fp:
                 words = [word.strip() for line in fp for word in line.split()]

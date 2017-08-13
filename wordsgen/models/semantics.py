@@ -37,7 +37,10 @@ class Semantics(metaclass=ABCMeta):
 
     @staticmethod
     def print_results(results):
-        print_array(results)
+        print("=== No of Semantics Result: {} ===".format(len(results)))
+
+        if len(results) > 0:
+            print_array(results)
 
 
 class NLTKWordNetSemantics(Semantics):
