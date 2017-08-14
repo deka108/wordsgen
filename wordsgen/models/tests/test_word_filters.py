@@ -1,7 +1,7 @@
 import unittest
 
-from models.word_filters import CharacterWordFilter, CharacterLengthFilter, \
-    ResultsWordFilter
+from wordsgen.models.word_filters import CharacterWordFilter, \
+    CharacterLengthFilter, ResultsWordFilter
 
 
 class TestFilters(unittest.TestCase):

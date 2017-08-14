@@ -1,10 +1,10 @@
 from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
 from enum import Enum
-from models.word_filters import CharacterLengthFilter, ResultsWordFilter, \
-    CharacterWordFilter
-from config import ROOT_DIR
-from utils.string_utils import print_array
+from wordsgen.models.word_filters import CharacterLengthFilter, \
+    ResultsWordFilter, CharacterWordFilter
+from wordsgen.config import ROOT_DIR
+from wordsgen.utils.string_utils import print_array
 
 
 class CorpusSource(Enum):

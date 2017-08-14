@@ -1,6 +1,6 @@
 import unittest
 
-from models.word_corpus import NLTKCorpus, RawTextCorpus, FileCorpus
+from wordsgen.models.word_corpus import NLTKCorpus, RawTextCorpus, FileCorpus
 
 
 class TestWordCorpus(unittest.TestCase):

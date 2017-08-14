@@ -1,6 +1,6 @@
 import unittest
 
-from models.semantics import NLTKWordNetSemantics, PosTag
+from wordsgen.models.semantics import NLTKWordNetSemantics, PosTag
 
 DEBUG = False
 

@@ -2,7 +2,7 @@ import random
 from abc import ABCMeta, abstractmethod
 from collections import Counter
 
-from utils.string_utils import parse_range
+from wordsgen.utils.string_utils import parse_range
 
 
 class WordFilter(metaclass=ABCMeta):

@@ -1,6 +1,6 @@
 import unittest
 
-from utils.string_utils import parse_range
+from wordsgen.utils.string_utils import parse_range
 
 
 class TestStringUtils(unittest.TestCase):

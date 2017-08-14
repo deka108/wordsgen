@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open("README.md", "r") as fp:
     long_description = fp.read()
@@ -8,7 +8,6 @@ setup(
     version=0.1,
     description='wordsgen - A collections of utilities for generating words',
     long_description=long_description,
-    py_modules=['wordsgen'],
     author='deka',
     author_email='deka108@gmail.com',
     install_requires=[
@@ -16,9 +15,10 @@ setup(
         'nltk>=3.2',
         'six>=1.10'
     ],
-    packages=['wordsgen'],
+    packages=find_packages(),
+    include_package_data=True,
     entry_points='''
        [console_scripts]
-       wordsgen=main:cli
+       wordsgen=wordsgen.main:cli
        ''',
 )

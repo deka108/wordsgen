@@ -1,9 +1,9 @@
 import click
 from click import UsageError, BadParameter
-from models.word_corpus import corpus_values, CorpusSource, NLTKCorpus, \
-    RawTextCorpus, FileCorpus
-from models.semantics import pos_tags, semantics_sources, SemanticsSource, \
-    NLTKWordNetSemantics
+from wordsgen.models.word_corpus import corpus_values, CorpusSource, \
+    NLTKCorpus, RawTextCorpus, FileCorpus
+from wordsgen.models.semantics import pos_tags, semantics_sources, \
+    SemanticsSource, NLTKWordNetSemantics
 
 
 @click.group()

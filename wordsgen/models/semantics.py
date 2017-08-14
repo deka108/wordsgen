@@ -1,7 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from enum import Enum
 from nltk.corpus import wordnet as wn
-from utils.string_utils import print_array
+from wordsgen.utils.string_utils import print_array
 
 
 class SemanticsSource(Enum):
