@@ -1,20 +1,21 @@
 # Words Generator
 Do you need to generate some words for your project? or team name or whatever-your-objective-is name?
 
-Do you ever forgot some words that you may know some of the word details but still could not remember it?
-
 Do you currently have a writing project? Are you planning to write a poem, or a song for your boy/girlfriend perhaps and in need to find inspiration for the words?
+
+Do you ever forgot some words that you may know some of the word details but still could not remember it?
 
 This project is what you need.
 
 Some back story: this project is inspired from a word game that I love to play. But I got frustated from spending too much time thinking about the words so I made this little help :p.
 
 ## How to Install
-1. Clone this project: `git clone`
-2. (Optional but strongly recommended) Create a virtual environment.
-3. Install this project. 
+1. (Optional but strongly recommended) Create a virtual environment for 
+python 3.
+2. Clone this project: `git clone https://github.com/deka108/wordsgen.git`
+3. Install this project and its dependencies.
 `pip install setup.py`
-4. Install the dependencies: nltk, click
+4. Download the required data for NLTK.
 !! If you want to use methods that are dependent on NLTK, the NLTK corpus data must be downloaded first (size=~12MB). No need to download everything. Just the words and the WordNet corpora should be enough. There is no need to download the NLTK corpus if you're using your custom file or raw text.
 
 ## Current Features
@@ -30,10 +31,13 @@ Notes:
 
 Example:
 - NLTK Corpus
+
 `wordsgen random_words --corpus-src nltk --letters love --length '4, 5' --sort`
 - RawText Corpus - will ask user's input for the text corpus
+
 `wordsgen random_words --corpus-src raw_text --letters love --length '4, 5' --sort`
 - File Corpus - will ask user's input for the corpus file name
+`wordsgen random_words --corpus-src file --letters love --length '4, 5' --sort`
 
 
 ### Semantics

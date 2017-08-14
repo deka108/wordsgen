@@ -1,4 +1,5 @@
 import click
+from click import UsageError, BadParameter
 from models.word_corpus import corpus_values, CorpusSource, NLTKCorpus, \
     RawTextCorpus, FileCorpus
 from models.semantics import pos_tags, semantics_sources, SemanticsSource, \
@@ -14,6 +15,8 @@ def cli():
                         "filters.")
 @click.option('--corpus-src', type=click.Choice(corpus_values), required=True,
               help="The corpus source.")
+@click.option('--raw_text', type=click.STRING, help="The corpus text.")
+@click.option('--file_name', type=click.STRING, help="The corpus filename.")
 @click.option('--length', type=click.STRING,
               help="The desired random words' length, can be an integer or a "
                    "range. Eg: 4 or 4,7.")
@@ -27,25 +30,59 @@ def cli():
               help="The desired maximum number of the random words.")
 @click.option('--sort/--shuffle', default=False,
               help="Whether the results should be shuffled.")
-def random_words(corpus_src, length,
+@click.option('--interactive/--non-interactive', default=True,
+              help="Interactive vs Non-interactive console.")
+def random_words(corpus_src, raw_text, file_name, length,
                  letters, exact_letters,
-                 max_result, sort):
+                 max_result, sort, interactive):
     """Generates random words based on a corpus and various filters."""
     corpus = None
+
+    if interactive:
+        if corpus_src == CorpusSource.RAW_TEXT.value:
+            raw_text = click.prompt("Enter corpus as a line of "
+                                    "comma-separated words "
+                                    "(eg: summer, winter, spring, rainy)",
+                                    default=raw_text, show_default=True,
+                                    type=click.STRING)
+        elif corpus_src == CorpusSource.FILE.value:
+            file_name = click.prompt("Enter your corpus file name and extension"
+                                     "(eg: oxford_adj_corpus.tsv)",
+                                     default=file_name, show_default=True,
+                                     type=click.STRING)
+    else:
+        if corpus_src == CorpusSource.FILE.value and not file_name:
+            raise BadParameter("If corpus-src=file, file_name must be "
+                               "supplied.")
 
     if corpus_src == CorpusSource.NLTK.value:
         corpus = NLTKCorpus()
     elif corpus_src == CorpusSource.RAW_TEXT.value:
-        raw_text = click.prompt("Enter corpus as a line of comma-separated "
-                                "words (eg: summer, winter, spring, rainy).")
         corpus = RawTextCorpus(raw_text=raw_text)
     elif corpus_src == CorpusSource.FILE.value:
-        file_name = click.prompt("Enter your corpus file name and extension"
-                                 "(eg: oxford_adj_corpus.tsv).")
         corpus = FileCorpus(file_name=file_name)
 
     if not corpus:
-        raise RuntimeError("Unable to create corpus.")
+        raise UsageError("Unable to create corpus.")
+
+    if interactive:
+        length = click.prompt("Enter the desired length of the random words "
+                              "(eg: 7 or 4, 5)",
+                              default=length, show_default=True,
+                              type=click.STRING)
+        letters = click.prompt("Enter the desired characters that must exist "
+                               "in the random words (eg. abba)",
+                               default=letters, show_default=True,
+                               type=click.STRING)
+        max_result = click.prompt("Enter the number of maximum results "
+                                  "(eg. 10)",
+                                  default=max_result, show_default=True,
+                                  type=click.INT)
+        exact_letters = click.confirm("Should the random words have the same "
+                                      "number of characters as in the letters?",
+                                      default=exact_letters, show_default=True)
+        sort = click.confirm("Should the random words results be sorted?",
+                             default=sort, show_default=True)
 
     corpus.generate_random_words(word_length=length,
                                  letters=letters, exact_letters=exact_letters,
