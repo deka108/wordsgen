@@ -1,5 +1,6 @@
 import unittest
 
+from wordsgen.config import ROOT_DIR
 from wordsgen.models.word_corpus import NLTKCorpus, FileCorpus, RawTextCorpus, \
     CorpusSource
 
@@ -55,7 +56,9 @@ class TestNLTKWordGenerator(unittest.TestCase):
 class TestFileWordGenerator(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.corpus = FileCorpus("oxford_adj_corpus.tsv")
+        path = "{root_dir}/corpus/{file_name}" \
+            .format(root_dir=ROOT_DIR, file_name="oxford_adj_corpus.tsv")
+        cls.corpus = FileCorpus(path)
 
     def test_file_word_generator_exception(self):
         self.assertRaises(FileNotFoundError, FileCorpus,

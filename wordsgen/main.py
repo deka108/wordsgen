@@ -15,8 +15,9 @@ def cli():
                         "filters.")
 @click.option('--corpus-src', type=click.Choice(corpus_values), required=True,
               help="The corpus source.")
-@click.option('--raw_text', type=click.STRING, help="The corpus text.")
-@click.option('--file_name', type=click.STRING, help="The corpus filename.")
+@click.option('--raw-text', type=click.STRING, help="The corpus text.")
+@click.option('--file', type=click.Path(exists=True, resolve_path=True),
+              help="The corpus filename / filepath relative to current path.")
 @click.option('--length', type=click.STRING,
               help="The desired random words' length, can be an integer or a "
                    "range. Eg: 4 or 4,7.")
@@ -32,12 +33,11 @@ def cli():
               help="Whether the results should be shuffled.")
 @click.option('--interactive/--non-interactive', default=True,
               help="Interactive vs Non-interactive console.")
-def random_words(corpus_src, raw_text, file_name, length,
+def random_words(corpus_src, raw_text, file, length,
                  letters, exact_letters,
                  max_result, sort, interactive):
     """Generates random words based on a corpus and various filters."""
     corpus = None
-
     if interactive:
         if corpus_src == CorpusSource.RAW_TEXT.value:
             raw_text = click.prompt("Enter corpus as a line of "
@@ -46,12 +46,12 @@ def random_words(corpus_src, raw_text, file_name, length,
                                     default=raw_text, show_default=True,
                                     type=click.STRING)
         elif corpus_src == CorpusSource.FILE.value:
-            file_name = click.prompt("Enter your corpus file name and extension"
-                                     "(eg: oxford_adj_corpus.tsv)",
-                                     default=file_name, show_default=True,
-                                     type=click.STRING)
+            file = click.prompt("Enter your corpus file name and extension"
+                                "(eg: oxford_adj_corpus.tsv)",
+                                default=file, show_default=True,
+                                type=click.Path(exists=True, resolve_path=True))
     else:
-        if corpus_src == CorpusSource.FILE.value and not file_name:
+        if corpus_src == CorpusSource.FILE.value and not file:
             raise BadParameter("If corpus-src=file, file_name must be "
                                "supplied.")
 
@@ -60,7 +60,7 @@ def random_words(corpus_src, raw_text, file_name, length,
     elif corpus_src == CorpusSource.RAW_TEXT.value:
         corpus = RawTextCorpus(raw_text=raw_text)
     elif corpus_src == CorpusSource.FILE.value:
-        corpus = FileCorpus(file_name=file_name)
+        corpus = FileCorpus(file_path=file)
 
     if not corpus:
         raise UsageError("Unable to create corpus.")

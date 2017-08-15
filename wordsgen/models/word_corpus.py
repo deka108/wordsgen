@@ -3,7 +3,6 @@ from collections import OrderedDict
 from enum import Enum
 from wordsgen.models.word_filters import CharacterLengthFilter, \
     ResultsWordFilter, CharacterWordFilter
-from wordsgen.config import ROOT_DIR
 from wordsgen.utils.string_utils import print_array
 
 
@@ -145,23 +144,20 @@ class FileCorpus(WordCorpus):
     """
     Build word corpus from a text file source.
     """
-    def __init__(self, file_name):
+    def __init__(self, file_path):
         """
-        :param file_name: the text file name which consist of line-separated
+        :param file_path: the text file path which consist of line-separated
         words.
         """
-        self.file_name = file_name
+        self.file_path = file_path
         super().__init__()
 
     def _get_words(self):
         try:
-            path = "{root_dir}/corpus/{file_name}"\
-                .format(root_dir=ROOT_DIR, file_name=self.file_name)
-
-            with open(path, 'r') as fp:
+            with open(self.file_path, 'r') as fp:
                 words = [word.strip() for line in fp for word in line.split()]
 
             return words
         except FileNotFoundError:
             raise FileNotFoundError("{} does not exist in the corpus folder"
-                                    .format(self.file_name))
+                                    .format(self.file_path))
