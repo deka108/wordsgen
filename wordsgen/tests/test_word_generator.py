@@ -27,28 +27,34 @@ class TestNLTKWordGenerator(unittest.TestCase):
         self.assertEqual(235892, len(res))
 
     def test_filter_letters(self):
-        res = self.corpus.generate_random_words(letters="cbade")
+        res = self.corpus.generate_random_words(include_chars="cbade")
         self.assertIsNotNone(res)
         self.assertEqual(1011, len(res))
 
-        res = self.corpus.generate_random_words(letters="cbade",
+        res = self.corpus.generate_random_words(include_chars="cbade",
+                                                exclude_chars="r")
+        self.assertIsNotNone(res)
+        self.assertEqual(413, len(res))
+
+        res = self.corpus.generate_random_words(include_chars="cbade",
                                                 exact_letters=True)
         self.assertIsNotNone(res)
         self.assertEqual(0, len(res))
 
     def test_filter_word_length(self):
-        res = self.corpus.generate_random_words(letters="cbade",
+        res = self.corpus.generate_random_words(include_chars="cbade",
                                                 word_length="5, 7")
         self.assertIsNotNone(res)
         self.assertEqual(25, len(res))
 
     def test_filter_max_result(self):
-        res = self.corpus.generate_random_words(letters="cbade", max_result=10)
+        res = self.corpus.generate_random_words(include_chars="cbade",
+                                                max_result=10)
         self.assertIsNotNone(res)
         self.assertEqual(10, len(res))
 
     def test_no_result(self):
-        res = self.corpus.generate_random_words(letters="qxyz")
+        res = self.corpus.generate_random_words(include_chars="qxyz")
         self.assertEqual(0, len(res))
 
 
@@ -71,30 +77,58 @@ class TestFileWordGenerator(unittest.TestCase):
         self.assertEqual(64, len(res))
 
     def test_filter_exact_letters(self):
-        res = self.corpus.generate_random_words(letters="geekfest",
+        res = self.corpus.generate_random_words(include_chars="geekfest",
                                                 exact_letters=True)
         self.assertIsNotNone(res)
         self.assertEqual(1, len(res))
         self.assertEqual("geekfest", res[0])
 
-        res = self.corpus.generate_random_words(letters="geekfest")
+        res = self.corpus.generate_random_words(include_chars="geekfest")
         self.assertIsNotNone(res)
         self.assertEqual(1, len(res))
         self.assertEqual("geekfest", res[0])
 
-        res = self.corpus.generate_random_words(letters="fest",
+        res = self.corpus.generate_random_words(include_chars="fest",
                                                 exact_letters=True)
         self.assertIsNotNone(res)
         self.assertEqual(0, len(res))
 
     def test_filter_nonexact_letters(self):
-        res = self.corpus.generate_random_words(letters="fest")
+        res = self.corpus.generate_random_words(include_chars="fest")
         self.assertIsNotNone(res)
         self.assertEqual(25, len(res))
 
-        res = self.corpus.generate_random_words(letters="esft", max_result=10)
+        res = self.corpus.generate_random_words(include_chars="esft",
+                                                max_result=10,
+                                                sort=True)
         self.assertIsNotNone(res)
         self.assertEqual(10, len(res))
+
+        res = self.corpus.generate_random_words(include_chars="fest",
+                                                exclude_chars="blrg")
+        self.assertIsNotNone(res)
+        self.assertEqual(7, len(res))
+
+        res = self.corpus.generate_random_words(exclude_chars="aio")
+        self.assertIsNotNone(res)
+        self.assertEqual(6, len(res))
+
+        res = self.corpus.generate_random_words(exclude_chars="est")
+        self.assertIsNotNone(res)
+        self.assertEqual(0, len(res))
+
+        res = self.corpus.generate_random_words(include_chars="esft",
+                                                exclude_chars="blrg",
+                                                max_result=10,
+                                                sort=True)
+        self.assertIsNotNone(res)
+        self.assertEqual(7, len(res))
+
+        res = self.corpus.generate_random_words(include_chars="esft",
+                                                exclude_chars="e",
+                                                print_console=True)
+        self.assertIsNotNone(res)
+        self.assertEqual(0, len(res))
 
 
 @unittest.skipUnless(run_test(CorpusSource.RAW_TEXT), "Skipping raw text "
@@ -116,7 +150,7 @@ class TestRawTextWordGenerator(unittest.TestCase):
                    'adspeak, PR-speak, science-speak, politispeak, ' \
                    'military-speak, computer-speak, BBC-speak, tech-speak, ' \
                    'legal-speak, left-speak, dumpsville, dullsville, ' \
-                   'squaresville,hicksville, smallville, stupidville, ' \
+                   'squaresville, hicksville, smallville, stupidville, ' \
                    'shitsville'
         cls.corpus = RawTextCorpus(raw_text)
 
@@ -126,14 +160,14 @@ class TestRawTextWordGenerator(unittest.TestCase):
         self.assertEqual(64, len(res))
 
     def test_sort_words(self):
-        res = self.corpus.generate_random_words(letters="fest", sort=True)
+        res = self.corpus.generate_random_words(include_chars="fest", sort=True)
         self.assertTrue(all([res[i] <= res[i+1] for i in range(len(res) - 1)]))
 
     def test_filter_letters(self):
-        res = self.corpus.generate_random_words(letters="")
+        res = self.corpus.generate_random_words(include_chars="")
         self.assertEqual(64, len(res))
 
-        res = self.corpus.generate_random_words(letters="u")
+        res = self.corpus.generate_random_words(include_chars="u")
         self.assertEqual(13, len(res))
 
 

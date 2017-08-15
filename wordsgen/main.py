@@ -21,12 +21,15 @@ def cli():
 @click.option('--length', type=click.STRING,
               help="The desired random words' length, can be an integer or a "
                    "range. Eg: 4 or 4,7.")
-@click.option('--letters', type=click.STRING,
+@click.option('--include', type=click.STRING,
               help="A string that consist of characters that must exist "
                    "in the random words. Eg: abba.")
 @click.option('--exact-letters/--not-exact-letters', default=False,
               help="Whether the random words must match the exact number of "
                    "characters in the --letters option.")
+@click.option('--exclude', type=click.STRING,
+              help="A string that consist of characters that must NOT exist "
+                   "in the random words. Eg: abba.")
 @click.option('--max-result', type=click.INT,
               help="The desired maximum number of the random words.")
 @click.option('--sort/--shuffle', default=False,
@@ -34,7 +37,7 @@ def cli():
 @click.option('--interactive/--non-interactive', default=True,
               help="Interactive vs Non-interactive console.")
 def random_words(corpus_src, raw_text, file, length,
-                 letters, exact_letters,
+                 include, exact_letters, exclude,
                  max_result, sort, interactive):
     """Generates random words based on a corpus and various filters."""
     corpus = None
@@ -70,22 +73,28 @@ def random_words(corpus_src, raw_text, file, length,
                               "(eg: 7 or 4, 5)",
                               default=length, show_default=True,
                               type=click.STRING)
-        letters = click.prompt("Enter the desired characters that must exist "
+        include = click.prompt("Enter the desired characters that must exist "
                                "in the random words (eg. abba)",
-                               default=letters, show_default=True,
+                               default=include, show_default=True,
+                               type=click.STRING)
+        exact_letters = click.confirm("Should the random words have the same "
+                                      "number of characters as in the letters?",
+                                      default=exact_letters, show_default=True)
+        exclude = click.prompt("Enter the desired characters that must "
+                               "NOT exist in the random words (eg. abba)",
+                               default=exclude, show_default=True,
                                type=click.STRING)
         max_result = click.prompt("Enter the number of maximum results "
                                   "(eg. 10)",
                                   default=max_result, show_default=True,
                                   type=click.INT)
-        exact_letters = click.confirm("Should the random words have the same "
-                                      "number of characters as in the letters?",
-                                      default=exact_letters, show_default=True)
         sort = click.confirm("Should the random words results be sorted?",
                              default=sort, show_default=True)
 
     corpus.generate_random_words(word_length=length,
-                                 letters=letters, exact_letters=exact_letters,
+                                 include_chars=include,
+                                 exact_letters=exact_letters,
+                                 exclude_chars=exclude,
                                  max_result=max_result, sort=sort,
                                  print_console=True)
 

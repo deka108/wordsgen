@@ -7,14 +7,21 @@ from wordsgen.models.word_filters import CharacterWordFilter, \
 class TestFilters(unittest.TestCase):
 
     def test_character_filter(self):
-        filter = CharacterWordFilter("abc", exact=False)
+        filter = CharacterWordFilter(include_chars="abc", exact=False)
         self.assertFalse(filter.exact)
-        self.assertEqual("abc", filter.characters)
-        self.assertEqual(3, filter.characters_length)
+        self.assertEqual("abc", filter.include_chars)
+        self.assertEqual(3, filter.include_chars_len)
 
-        filter = CharacterWordFilter("cab", exact=True)
+        filter = CharacterWordFilter(include_chars="abc",
+                                     exclude_chars="defg",
+                                     exact=False)
+        self.assertFalse(filter.exact)
+        self.assertEqual("def", filter.exclude_chars)
+        self.assertEqual(4, filter.exclude_chars)
+
+        filter = CharacterWordFilter(include_chars="cab", exact=True)
         self.assertTrue(filter.exact)
-        self.assertEqual("abc", filter.sorted_characters)
+        self.assertEqual("abc", filter.sorted_include_chars)
 
     def test_character_length_filter(self):
         filter = CharacterLengthFilter("4")

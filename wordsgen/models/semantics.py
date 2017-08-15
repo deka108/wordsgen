@@ -80,13 +80,13 @@ class NLTKWordNetSemantics(Semantics):
         return results
 
     def _get_pos_tagging(self, pos):
-        if pos == PosTag.VERB:
+        if pos == PosTag.VERB.value:
             return wn.VERB
-        elif pos == PosTag.NOUN:
+        elif pos == PosTag.NOUN.value:
             return wn.NOUN
-        elif pos == PosTag.ADJECTIVE:
+        elif pos == PosTag.ADJECTIVE.value:
             return wn.ADJ
-        elif pos == PosTag.ADVERB:
+        elif pos == PosTag.ADVERB.value:
             return wn.ADV
 
     @staticmethod

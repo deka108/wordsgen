@@ -55,7 +55,8 @@ class WordCorpus(metaclass=ABCMeta):
 
     def generate_random_words(self,
                               word_length=None, min_length=0, max_length=100,
-                              letters=None, exact_letters=False,
+                              include_chars="", exact_letters=False,
+                              exclude_chars="",
                               max_result=None, sort=False,
                               print_console=False):
         """
@@ -65,11 +66,13 @@ class WordCorpus(metaclass=ABCMeta):
         :param max_length: the maximum length of the whole corpus.
         :param min_length: the minimum length of the whole corpus.
         The string can be a number or two comma-separated numbers.
-        :param letters: a string where all the characters in the string 
-        shall appear in the random words. Eg: abba or aero.
+        :param include_chars: a string where the exact number of characters in
+        the string must appear in the random words. Eg: abba or aero.
         :param exact_letters: a boolean to indicate that the random words
         must contain the same number of characters in the letters argument
         and no others.
+        :param exclude_chars: a string where all the characters must not
+        exist in the random words.
         :param max_result: an integer to limit the random words results.
         :param sort: a boolean to indicate whether the random words
          need to be shuffled or sorted alphabetically.
@@ -87,9 +90,10 @@ class WordCorpus(metaclass=ABCMeta):
                 .filter_corpus(filtered_corpus)
 
         # filtered by characters
-        if letters:
-            filtered_corpus = CharacterWordFilter(characters=letters,
-                                                  exact=exact_letters)\
+        if include_chars or exclude_chars:
+            filtered_corpus = CharacterWordFilter(include_chars=include_chars,
+                                                  exact=exact_letters,
+                                                  exclude_chars=exclude_chars)\
                 .filter_corpus(filtered_corpus)
 
         # filtered by maximum number of result

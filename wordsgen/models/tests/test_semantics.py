@@ -17,7 +17,7 @@ class TestNLTKWordNetSemantics(unittest.TestCase):
         self.assertEqual(37, len(synonyms))
 
         synonyms = self.word_net_semantics.find_synonyms("good",
-                                                         pos=PosTag.ADJECTIVE,
+                                                         pos=PosTag.ADJECTIVE.value,
                                                          print_console=DEBUG)
         self.assertIsNotNone(synonyms)
         self.assertEqual(32, len(synonyms))
@@ -33,7 +33,7 @@ class TestNLTKWordNetSemantics(unittest.TestCase):
         self.assertEqual(37, len(antonyms))
 
         antonyms = self.word_net_semantics.find_antonyms("good",
-                                                         pos=PosTag.ADJECTIVE,
+                                                         pos=PosTag.ADJECTIVE.value,
                                                          print_console=DEBUG)
         self.assertIsNotNone(antonyms)
         self.assertEqual(20, len(antonyms))

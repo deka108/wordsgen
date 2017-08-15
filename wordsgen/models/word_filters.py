@@ -16,48 +16,55 @@ class WordFilter(metaclass=ABCMeta):
 
 class CharacterWordFilter(WordFilter):
 
-    def __init__(self, characters, exact):
+    def __init__(self, include_chars, exclude_chars, exact):
         super().__init__()
 
-        if not isinstance(characters, str):
-            raise ValueError("Characters must be a string Eg. abc")
-        self.characters = characters
-        self.characters_length = len(characters)
-        self.characters_bag = Counter(characters)
-        self.sorted_characters = "".join(sorted(characters))
+        self.include_chars = include_chars
+        self.include_chars_len = len(include_chars)
+        self.include_chars_bag = Counter(include_chars)
+        self.exclude_chars = exclude_chars
+        self.exclude_chars_len = len(exclude_chars)
+        self.exclude_chars_set = set(exclude_chars)
+        self.sorted_include_chars = "".join(sorted(include_chars))
         self.exact = exact
 
     def filter_corpus(self, compact_corpus):
         results = {}
 
         if self.exact:
-            if self.characters_length in compact_corpus:
-                sorted_to_words = compact_corpus[self.characters_length]
+            if self.include_chars_len in compact_corpus:
+                sorted_to_words = compact_corpus[self.include_chars_len]
 
-                if self.sorted_characters in sorted_to_words:
-                    results.setdefault(self.characters_length,
-                                       {self.sorted_characters:
+                if self.sorted_include_chars in sorted_to_words:
+                    results.setdefault(self.include_chars_len,
+                                       {self.sorted_include_chars:
                                            sorted_to_words[
-                                               self.sorted_characters]})
+                                               self.sorted_include_chars]})
         else:
             for length in compact_corpus:
-                if length >= self.characters_length:
+                if length >= self.include_chars_len:
                     for sorted_word in compact_corpus[length]:
                         sorted_word_bag = Counter(sorted_word)
-                        sorted_word_bag.subtract(self.characters_bag)
-                        if all(sorted_word_bag[ltr] >= 0
-                               for ltr in self.characters_bag):
+                        sorted_word_bag.subtract(self.include_chars_bag)
+                        if self._check_exclude(sorted_word_bag) and \
+                                self._check_include(sorted_word_bag):
                             # new result
                             new_sorted_to_words = \
                                 {sorted_word: compact_corpus[length][sorted_word]}
 
-                            # length did not exist
+                            # create new dictionary if length does not exist
                             sorted_to_words = results.get(length, {})
                             sorted_to_words.update(new_sorted_to_words)
 
                             results.setdefault(length, sorted_to_words)
 
         return results
+
+    def _check_exclude(self, sorted_word_bag):
+        return all(ltr not in sorted_word_bag for ltr in self.exclude_chars_set)
+
+    def _check_include(self, sorted_word_bag):
+        return all(sorted_word_bag[ltr] >= 0 for ltr in self.include_chars_bag)
 
 
 class LengthWordFilter(WordFilter):
